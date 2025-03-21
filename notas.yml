@@ -1,0 +1,44 @@
+#Registrarnos en AWS
+#Crear una instancia EC2
+
+#Descargamos gitbash
+
+#Paso1 Conectarnos a la instancia EC2
+ssh -i "key.pem" ubuntu@tu_ip_publica
+
+#Paso2 Actualizamos el sistema y paquetes
+sudo apt update && sudo apt upgrade -y
+
+#Paso3 Instalamos dependencias
+sudo apt install -y ca-certificates curl gnupg
+
+#Paso4 Agregamos la clave GPG oficial de Docker
+#Añade la clave GPG oficial de Docker para verificar la integridad de los paquetes descargados de su repositorio.
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+#Paso5 agregamos el repositorio de Docker a nuestro sistema
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  "$(lsb_release -cs)" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+#Paso6 Instalamos Docker
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+#Paso7 verificamos que docker se haya instalado correctamente
+sudo systemctl status docker
+
+#Paso8 Si el servicio de docker no se ha iniciado, lo iniciamos
+sudo systemctl start docker
+
+#Paso9 si queremos que docker se inicie al arrancar el sistema
+sudo systemctl enable docker
+
+#Paso10 agregamos nuestro usuario al grupo de docker
+sudo usermod -aG docker $USER 
+newgrp docker
+docker ps
+

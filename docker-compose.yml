@@ -1,0 +1,22 @@
+services:
+  libreria-itz: #Api de la libreria
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    image: libreria-itz-image:tag
+    depends_on:
+      - mongo #Nombre del servicio de la base de datos
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/libreria_itz_db
+    command: node index #Comando para iniciar la aplicacion
+  mongo: #Base de datos
+    image: mongo:6.0 #Imagen oficial de la base de datos mongo
+    container_name: mongo #Nombre del contenedor
+    ports:
+      - "27017:27017" #Mapeo del puerto 27017 del contenedor al puerto 27017 del host
+    volumes:
+      - mongo-data:/data/db #Volumen persistente para almacenar los datos dentro del contenedor
+volumes:
+  mongo-data: #Volumen para la base de datos

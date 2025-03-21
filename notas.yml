@@ -42,3 +42,32 @@ sudo usermod -aG docker $USER
 newgrp docker
 docker ps
 
+#Paso11 construimos la imagen de docker
+docker build -t ricardobg/libreria-itz-image:latest .
+
+#Paso12 verificamos que la imagen se haya construido correctamente
+docker images
+
+#Paso13 login en docker hub
+docker login
+
+#Paso14 subimos la imagen a docker hub
+docker push ricardobg/libreria-itz-image:latest
+
+#Clonar nuestro repositorio
+git init
+
+crear archivo .gitignore y agregamos node_modules
+git add .
+git commit -m "primer commit"
+
+creamos un repo en github
+git remote add origin https://github.com/Richiety11/libreria_itz.git
+git branch -M main
+git push -u origin main
+
+#Paso15 en el servidor clonamos el repositorio
+git clone https://github.com/Richiety11/libreria_itz.git
+
+docker build -t ricardobg/libreria-itz-image:latest .
+

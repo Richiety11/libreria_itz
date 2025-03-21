@@ -37,9 +37,9 @@ const swaggerOptions = {
         ]
     },
     apis: [
-        //path.join(__dirname, 'routes.js'),
-        path.join(__dirname, 'services/libros.js'), 
-        path.join(__dirname, 'services/users.js')
+        path.join(__dirname, 'routes.js'),
+        //path.join(__dirname, 'services/libros.js'), 
+        //path.join(__dirname, 'services/users.js')
     ],
 };
 

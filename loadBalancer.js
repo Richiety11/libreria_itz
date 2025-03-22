@@ -10,7 +10,7 @@ const PORT = 8000;
 const services = {
     libros: 'http://localhost:3000',
     users: 'http://localhost:3001',
-    documentacion: 'http://localhost:3002'
+    documentacion: 'http://18.227.183.254:3001/'
 };
 //Middleware para compronbar si el microservicio esta disponible
 const checkServiceStatus = async (req, res, next) => {

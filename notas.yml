@@ -69,5 +69,9 @@ git push -u origin main
 #Paso15 en el servidor clonamos el repositorio
 git clone https://github.com/Richiety11/libreria_itz.git
 
-docker build -t ricardobg/libreria-itz-image:latest .
+#Aplicamos la orquestacion de servicios
+docker-compose up -d --build
+
+#Perimitimos el trafico en las reglas de seguridad de aws
+#Agregamos una regla de entrada para el puerto 3000 y 3001
 

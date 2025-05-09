@@ -3,7 +3,8 @@ const http = require('http');
 //npm i cluster http-proxy
 const cluster = require('cluster');
 const { createProxyServer } = require('http-proxy');
-const {cpuUsage} = require('process');
+const {cpuUsage, pid} = require('process');
+const master = require('cluster/lib/master');
 
 //Obtener el numero de CPUs disponibles en el sistema
 const numCPUs = os.cpus().length;
@@ -16,10 +17,46 @@ if (cluster.isMaster) {
     console.log('Servidor maestro iniciado en el puerto ' + PORT);
     //Arreglo para almacenar los pods activos
     const pods = [];
-    for (let i = 0; i < numPods, i++;) {
+    const podsStats = {};
+
+    for (let i = 0; i < numPods; i++) {
             const pod = cluster.fork(); // Crear un nuevo pod
             pods.push(pod); //lo almacenamos en la lista de pods
     }
+    //Creamos un server para el monitoreo de los pods
+    const express = require('express');
+    const path = require('path');
+    const app = express();
+    const monitorPORT = 8080; // Puerto para el servidor de monitoreo
+
+    app.set('view engine', 'ejs'); // Usar EJS como motor de plantillas
+    app.set('views', path.join(__dirname, 'views')); // Establecer la carpeta de vistas
+
+    // Ruta para estadisticas de los pods
+    //Nos regresa la vista de estadisticas
+    app.get('/stats', (req, res) => {
+            res.render('stats');
+    });
+
+    //Ruta para obtener los datos de las estadisticas
+    app.get('/api/stats', (req, res) => {
+        const memoryUsage = process.memoryUsage().rss / 1024 / 1024; //Obtener el uso de memoria en MB
+        const cpuUsage = os.loadavg()[0]/ numCPUs*100; //Obtener el uso de CPU en porcentaje
+        res.json({
+            master: {
+                pid: process.pid,
+                cpu: cpuUsage.toFixed(2),
+                memory: memoryUsage.toFixed(2),
+                podsCount: pods.length,
+            },
+            pods: Object.values(podsStats)
+        });
+    });
+
+    //Iniciar el servidor de monitoreo
+    app.listen(monitorPORT, () => {
+        console.log('Servidor de monitoreo iniciado en el puerto ' + monitorPORT);
+    });
     
     //indice para el balanceo de carga (round-robin)
     let podSeleccionado = 0; 
@@ -66,6 +103,7 @@ if (cluster.isMaster) {
                 pod.port = message.port;
             }
             if (message.stats) {
+                podsStats[pod.process.pid] = {pid: pod.process.pid, cpu: message.stats.cpu, memory: message.stats.memory};
                 console.log('Pod ' + pod.process.pid + ' CPU: ' + message.stats.cpu + ' Memoria: ' + message.stats.memory );
 
             }
